@@ -1,5 +1,61 @@
 ![header](imgs/header.jpg)
 
+# AlphaFold2 on Blackwell GPUs (RTX 50-series / RTX Pro)
+
+These notes walk you through setting up a compatible Conda environment for running **AlphaFold2** on systems equipped with **NVIDIA RTX 5090, 5080, 5070, 5060, or RTX Pro GPUs**.
+
+> **Tested with:** CUDA 12.9 (Driver version `575.57.08`) and an RTX 5090 & RTX 5080
+
+## ⚙️ Prerequisites
+
+- Ensure your system has the latest NVIDIA driver installed.
+- Install **CUDA Toolkit 12.9**: [Download from NVIDIA](https://developer.nvidia.com/cuda-downloads)
+
+## 🧪 Conda Environment Setup
+
+Run the following commands to set up the environment in exactly(!) the order outlined below:
+
+```
+# Create and activate the conda environment
+conda create --prefix ./af2_blackwell python=3.11.11 -c conda-forge -c nvidia
+conda activate ./af2_blackwell
+
+# Install key dependencies
+conda install --quiet --yes --channel conda-forge libstdcxx-ng>=12.1.0 openmm=8.0.0 pdbfixer
+
+# Clean up cached files (optional)
+conda clean --all --force-pkgs-dirs --yes
+
+# Upgrade pip and essential build tools (optional)
+python3 -m pip install --upgrade pip setuptools wheel
+
+# Install JAX with CUDA 12 support
+pip install "jax[cuda12]==0.6.0" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+# Install TensorFlow (both GPU and CPU versions)
+pip install tensorflow==2.19.0
+pip install tensorflow-cpu==2.19.0
+
+# Install additional Python packages
+pip install absl-py==1.0.0 \
+  chex==0.1.86 \
+  dm-haiku==0.0.14 \
+  dm-tree==0.1.8 \
+  immutabledict==2.0.0 \
+  ml-collections==0.1.0 \
+  pandas \
+  biopython
+```
+
+If the above doesn't work, then try adding the `--no-cache-dir` argument to the `pip` commands to ensure you are installing the exact packages that we would like to have.
+
+### Notes:
+
+* JAX was limited to 0.6.0 - higher versions led to [this error](https://github.com/jax-ml/jax/issues/29740)
+* The `tensorflow` package must be install before the `tensorflow-cpu` package
+
+---
+
 # AlphaFold
 
 This package provides an implementation of the inference pipeline of AlphaFold
