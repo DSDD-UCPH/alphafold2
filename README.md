@@ -52,7 +52,7 @@ If the above doesn't work, then try adding the `--no-cache-dir` argument to the 
 ### Notes:
 
 * JAX was limited to 0.6.0 - higher versions led to [this error](https://github.com/jax-ml/jax/issues/29740)
-* The `tensorflow` package must be install before the `tensorflow-cpu` package
+* The `tensorflow` package must be installed before the `tensorflow-cpu` package
 
 ---
 
