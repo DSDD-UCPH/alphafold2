@@ -253,15 +253,18 @@ def predict_structure(
 
   # Get features.
   t_0 = time.time()
-  feature_dict = data_pipeline.process(
-      input_fasta_path=fasta_path,
-      msa_output_dir=msa_output_dir)
-  timings['features'] = time.time() - t_0
-
-  # Write out features as a pickled dictionary.
   features_output_path = os.path.join(output_dir, 'features.pkl')
-  with open(features_output_path, 'wb') as f:
-    pickle.dump(feature_dict, f, protocol=4)
+  if os.path.exists(features_output_path):
+    feature_dict = pickle.load(open(features_output_path, 'rb'))
+  else:
+    feature_dict = data_pipeline.process(
+        input_fasta_path=fasta_path,
+        msa_output_dir=msa_output_dir)
+    timings['features'] = time.time() - t_0
+
+    # Write out features as a pickled dictionary.
+    with open(features_output_path, 'wb') as f:
+      pickle.dump(feature_dict, f, protocol=4)
 
   unrelaxed_pdbs = {}
   unrelaxed_proteins = {}
